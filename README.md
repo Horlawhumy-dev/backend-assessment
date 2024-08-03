@@ -1,11 +1,20 @@
 # Task Management Backend Assessment
 
-A simple Django Rest backend for a tasks mananagement for users to manage all tasks. It supports basic CRUD (Create, Read, Update, Delete), search and filtering of all tasks .
+A Django Rest backend for tasks mananagement by users. It supports basic CRUD (Create, Read, Update, Delete), search and filtering of all tasks created.
+
+## Features
+
+- Endpoints for managing users authentication and authorization
+- Endpoints for tasks managememnt by users
+- Basic error handling
+- Solid Continuous Integration Pipeline suporting docker-compose workflows
+- Tasks searching and Filtering APIs
+
 
 ### Note: Future enhancements would be to use:
-** Redis for catche and realtime updates
+** Redis for catching to reduce database workloads and realtime updates
 ** Kafka or Rabbitmq handling stream of tasks creation
-** Introduce email engine for notifications
+** Introducing email engine for notifications
 
 ## Getting Started
 
@@ -13,6 +22,13 @@ A simple Django Rest backend for a tasks mananagement for users to manage all ta
 
 - Python 3.8+ install
 - Make install
+- Docker Compose install
+
+```bash
+    curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+    chmod +x /usr/local/bin/docker-compose
+```
 
 ### Installation
 
@@ -23,31 +39,18 @@ A simple Django Rest backend for a tasks mananagement for users to manage all ta
    cd backend_assessment
     ```
 
-
-2.  **Create Virtual Environment and Install Requirements**
-    ```bash
-        python3 -m venv env
-        source env/bin/activate  # On Windows use `env\Scripts\activate`
-        make install
-    ```
-
-3. **Build Docker Image**
+2. **Build Docker Image**
     ```bash
         make build
     ```
 
-4. **Start Docker Containers**
+3. **Start Docker Containers**
 
     ```
         make up
     ```
 
-5. **Run Migrations**
-
-    ```bash
-        make migrate
-    ```
-6. **Create Super User**
+4. **To Create SuperUser**
 
     ```bash
         make createsuperuser
