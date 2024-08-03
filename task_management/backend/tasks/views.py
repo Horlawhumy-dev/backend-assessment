@@ -41,6 +41,7 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         # Ensure the task's user is not modified
         request.data.pop('user', None)
+        
         response = super().update(request, *args, **kwargs)
 
         logger.debug(f"Task updated with response: {response.data}")
