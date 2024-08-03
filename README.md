@@ -53,4 +53,10 @@ A simple Django Rest backend for a tasks mananagement for users to manage all ta
         make createsuperuser
     ```
 
+## Internal API Endpoints Documentation
+
+    ```
+        ./api_doc.txt file
+    ```
+
 ## Assessment Feedback 🙏
