@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# wait-for-it.sh script to complete database creation
+# script to ensure database up and running before migration
 
 set -e
 
