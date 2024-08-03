@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   db:
@@ -15,7 +15,10 @@ services:
   web:
     build: 
       context: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "./wait-for-it.sh db:5432 -- 
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
     ports:
@@ -28,6 +31,8 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
+      SECRET_KEY: django-insecure-qp^%@n77+ydr-auroxk&zcg&xhj2x4+&3@f+!s3+m9ss*cez3j
+      DEBUG: False
 
 volumes:
   postgres_data:
