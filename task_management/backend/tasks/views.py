@@ -1,7 +1,10 @@
 import logging
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Task
+from .filters import TaskFilter
 from .serializers import TaskSerializer
 
 logger = logging.getLogger('task_management')
@@ -10,6 +13,9 @@ class TaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]  # Ensuring that only authenticated users can access these views
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = TaskFilter
+    search_fields = ['title', 'description']
 
     def list(self, request, *args, **kwargs):
         logger.debug(f"Task list requested by user: {request.user}")
