@@ -3,6 +3,93 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from .models import Task
+from .serializers import TaskSerializer
+
+
+class TaskModelTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.task = Task.objects.create(
+            title='Task 1',
+            description='Test task description',
+            status='pending',
+            due_date='2024-08-31',
+            user=self.user
+        )
+
+    def test_task_creation(self):
+        self.assertEqual(self.task.title, 'Task 1')
+        self.assertEqual(self.task.description, 'Test task description')
+        self.assertEqual(self.task.status, 'pending')
+        self.assertEqual(self.task.due_date, '2024-08-31')
+        self.assertEqual(self.task.user, self.user)
+
+
+    def test_task_str_representation(self):
+        self.assertEqual(str(self.task), 'Task 1')
+
+    def test_task_default_status(self):
+        task = Task.objects.create(
+            title='Task 2',
+            description='Another test task',
+            due_date='2024-09-01',
+            user=self.user
+        )
+        self.assertEqual(task.status, 'pending')
+
+
+
+class TaskSerializerTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.task = Task.objects.create(
+            title='Task 1',
+            description='Test task description',
+            status='pending',
+            due_date='2024-08-31',
+            user=self.user
+        )
+        self.serializer = TaskSerializer(instance=self.task)
+
+    def test_task_serialization(self):
+        data = self.serializer.data
+        self.assertEqual(data['title'], 'Task 1')
+        self.assertEqual(data['description'], 'Test task description')
+        self.assertEqual(data['status'], 'pending')
+        self.assertEqual(data['due_date'], '2024-08-31')
+        self.assertEqual(data['user'], self.user.id)
+
+    def test_task_deserialization(self):
+        data = {
+            'title': 'Task 2',
+            'description': 'New task description',
+            'status': 'completed',
+            'due_date': '2024-09-01',
+            'user': self.user.id
+        }
+        serializer = TaskSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        task = serializer.save()
+        self.assertEqual(task.title, 'Task 2')
+        self.assertEqual(task.description, 'New task description')
+        self.assertEqual(task.status, 'completed')
+        self.assertEqual(task.due_date.strftime('%Y-%m-%d'), '2024-09-01')
+        self.assertEqual(task.user, self.user)
+
+    def test_task_validation(self):
+        # Invalid data
+        invalid_data = {
+            'title': '',
+            'description': 'No title task',
+            'status': 'completed',
+            'due_date': '2024-09-01',
+            'user': self.user.id
+        }
+        serializer = TaskSerializer(data=invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(set(serializer.errors.keys()), {'title'})
+
+
 
 class TaskTests(APITestCase):
     def setUp(self):
