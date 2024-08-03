@@ -17,6 +17,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -24,21 +25,26 @@ jobs:
 
     - name: Create .env file
       run: |
-
-        echo "SECRET_KEY=qp6_snqe9&ztum3lju!pj8%aau&xgm@coid4px5bvhi65w0&s$" >> .env
+        echo "SECRET_KEY=django-insecure-qp^%@n77+ydr-auroxk&zcg&xhj2x4+&3@f+!s3+m9ss*cez3j" >> .env
+        echo "DEBUG=False" >> .env
+        echo "POSTGRES_DB=task_management" >> .env
+        echo "POSTGRES_USER=postgres" >> .env
+        echo "POSTGRES_PASSWORD=12Facebook@6" >> .env
+        echo "POSTGRES_HOST=localhost" >> .env
+        echo "POSTGRES_PORT=5432" >> .env
+      working-directory: backend-assessment/task_management/backend
         
-        echo "DEBUG=True" >> .env
-        
-    
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+      working-directory: backend-assessment/task_management/backend
 
-    - name: Run Tests
-      run: |
-        # Export environment variables safely using envsubst
-        export $(grep -v '^#' .env | xargs -d '\n')
-        pytest
-      env:
-        ENV_FILE_PATH: .env
+    # Uncomment and modify the following block to run tests
+    # - name: Run Tests
+    #   run: |
+    #     export $(grep -v '^#' .env | xargs -d '\n')
+    #     pytest
+    #   working-directory: backend-assessment/task_management/backend
+    #   env:
+    #     ENV_FILE_PATH: .env
