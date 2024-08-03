@@ -160,3 +160,71 @@ class TaskTests(APITestCase):
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Task.objects.filter(id=task.id).exists())
+
+
+class TaskFilterSearchTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        # Generate token for the user
+        self.token = Token.objects.create(user=self.user)
+
+        # Include the token in the headers
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
+        # Create tasks with different statuses and due dates
+        self.task1 = Task.objects.create(
+            title='Task 1', description='Test task 1', status='pending', due_date='2024-08-31', user=self.user
+        )
+        self.task2 = Task.objects.create(
+            title='Task 2', description='Test task 2', status='completed', due_date='2024-09-01', user=self.user
+        )
+        self.task3 = Task.objects.create(
+            title='Task 3', description='Test task 3', status='in-progress', due_date='2024-08-30', user=self.user
+        )
+
+    def test_filter_by_status(self):
+        url = '/api/tasks/?status=pending'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Task 1')
+
+    def test_filter_by_due_date(self):
+        url = '/api/tasks/?due_date=2024-09-01'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Task 2')
+
+    def test_filter_by_status_and_due_date(self):
+        url = '/api/tasks/?status=in-progress&due_date=2024-08-30'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Task 3')
+
+    def test_search_by_title(self):
+        url = '/api/tasks/?search=Task 1'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Task 1')
+
+    def test_search_by_description(self):
+        url = '/api/tasks/?search=Test task 2'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Task 2')
+
+    def test_search_by_title_and_description(self):
+        url = '/api/tasks/?search=Task'
+        response = self.client.get(url, format='json')
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3)  # All tasks should be included
