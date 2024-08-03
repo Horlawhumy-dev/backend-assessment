@@ -32,13 +32,13 @@ jobs:
         echo "POSTGRES_PASSWORD=12Facebook@6" >> .env
         echo "POSTGRES_HOST=localhost" >> .env
         echo "POSTGRES_PORT=5432" >> .env
-      working-directory: backend-assessment/task_management/backend
+      # working-directory: backend-assessment/task_management/backend
         
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-      working-directory: backend-assessment/task_management/backend
+      # working-directory: backend-assessment/task_management/backend
 
     # Uncomment and modify the following block to run tests
     # - name: Run Tests
