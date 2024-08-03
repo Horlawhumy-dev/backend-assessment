@@ -97,7 +97,7 @@ jobs:
       run: |
         until docker-compose exec -T db pg_isready -U user; do
           echo "Waiting for database to be ready..."
-          sleep 5
+          sleep 10
         done
       working-directory: task_management
 
