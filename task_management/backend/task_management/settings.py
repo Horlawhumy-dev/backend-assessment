@@ -136,6 +136,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -150,33 +151,31 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
-            'formatter': 'verbose',
-        },
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',  # Set to INFO to avoid too much detail
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'handlers': ['console'],
+            'level': 'INFO',  # Change to INFO or WARNING to reduce verbosity
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'handlers': ['console'],
+            'level': 'WARNING',  # Only log warnings and errors
             'propagate': False,
         },
-        'task_management': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # Only log warnings and errors from database queries
             'propagate': False,
+        },
+        '': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # Default level for all other loggers
         },
     },
 }
