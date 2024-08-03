@@ -6,11 +6,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
 
 logger = logging.getLogger('task_management')
-User = get_user_model()
-
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
